@@ -1,0 +1,28 @@
+# 빌드 결과·캐시 (이미지 안에서 새로 빌드한다)
+build/
+.gradle/
+out/
+bin/
+
+# 업로드된 파일 (로컬 데이터)
+uploads/
+
+# 비밀 값이 들어갈 수 있는 파일
+.env
+.env.*
+
+# IDE · OS · 로그
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+*.log
+
+# 이미지에 필요 없는 파일
+db/
+scripts/
+*.http
+README.md
+Dockerfile
+.dockerignore
