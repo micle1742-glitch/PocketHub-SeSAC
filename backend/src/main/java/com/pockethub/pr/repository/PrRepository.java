@@ -33,7 +33,7 @@ public interface PrRepository extends JpaRepository<Pr, Long> {
     List<File> findFilesByCommitIds(@Param("commitIds") Collection<String> commitIds);
 
     // TODO : User 엔티티가 생기면 연관관계로 변경
-    @Query(value = "select user_id as userId, email, nickname, icon from `user` where user_id in (:userIds)",
+    @Query(value = "select user_id as userId, email, nickname, icon from users where user_id in (:userIds)",
             nativeQuery = true)
     List<MemberRow> findMembers(@Param("userIds") Collection<Long> userIds);
 
