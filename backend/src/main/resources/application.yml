@@ -5,14 +5,14 @@ spring:
   application:
     name: pockethub-backend
   datasource:
-    url: jdbc:mysql://localhost:3306/pockethub?serverTimezone=Asia/Seoul&characterEncoding=UTF-8&connectionCollation=utf8mb4_unicode_ci
+    url: ${DB_URL}        # 예: jdbc:postgresql://<호스트>:5432/<DB이름>
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: org.postgresql.Driver
   jpa:
     open-in-view: false
     hibernate:
-      ddl-auto: none        # 스키마는 db/schema.sql 을 MySQL 에서 직접 실행
+      ddl-auto: none        # 스키마는 db/schema-postgres.sql 을 PostgreSQL 에서 직접 실행
     properties:
       hibernate:
         jdbc:
