@@ -27,9 +27,19 @@ spring:
       max-file-size: 10MB # 파일 하나 최대 업로드 크기
       max-request-size: 50MB # multipart 요청 최대 크기
 
+# 파일 저장소: local(로컬 디스크) | supabase(Supabase Storage)
+# 비워 두면 SUPABASE_URL·SUPABASE_SERVICE_KEY·SUPABASE_BUCKET 이 모두 있을 때 supabase, 아니면 local
+storage:
+  type: ${STORAGE_TYPE:}
+
+supabase:
+  url: ${SUPABASE_URL:}
+  service-key: ${SUPABASE_SERVICE_KEY:}
+  bucket: ${SUPABASE_BUCKET:}
+
 # 업로드 설정: 팀에서 값 확정 후 채움
 upload:
-  dir: uploads
+  dir: uploads          # storage.type=local 일 때 저장 폴더
 #  max-size:            # TODO: 파일 1개 최대 크기 (예: 10MB)
 #  allowed-extensions:  # TODO: 허용 확장자 목록
 
