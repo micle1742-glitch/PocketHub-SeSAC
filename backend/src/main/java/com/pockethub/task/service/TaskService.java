@@ -125,11 +125,13 @@ public class TaskService {
     }
 
     // 팀이 없으면 404, 요청한 사용자가 팀원이 아니면 403
+    // 팀 존재와 팀원 여부를 쿼리 한 번으로 확인한다 (팀 없음 404 → 팀원 아님 403 순서는 그대로)
     private void validateMember(long userId, long repoId) {
-        if (taskRepository.countTeam(repoId) == 0) {
+        int status = taskRepository.findMemberStatus(repoId, userId);
+        if (status == TaskRepository.MEMBER_STATUS_NO_TEAM) {
             throw new NotFoundException("팀을 찾을 수 없습니다.");
         }
-        if (taskRepository.countMember(repoId, userId) == 0) {
+        if (status != TaskRepository.MEMBER_STATUS_MEMBER) {
             throw new ForbiddenException("팀원만 접근할 수 있습니다.");
         }
     }
