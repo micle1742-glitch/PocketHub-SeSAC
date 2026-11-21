@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: ${PORT:8080}    # 배포 환경이 PORT 를 주면 그 값, 없으면 8080
 
 spring:
   application:
@@ -39,4 +39,5 @@ jwt:
   refresh-expiration-days: 14
 
 cors:
-  allowed-origins: http://localhost:3000
+  # 여러 주소는 쉼표로 구분 (예: https://a.example.com,http://localhost:3000)
+  allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000}
