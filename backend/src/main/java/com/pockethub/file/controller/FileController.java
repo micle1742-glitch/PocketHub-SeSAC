@@ -3,6 +3,7 @@ package com.pockethub.file.controller;
 import com.pockethub.common.response.ResponseDTO;
 import com.pockethub.file.dto.FileDTO;
 import com.pockethub.file.dto.FileDownloadRes;
+import com.pockethub.file.dto.TempFileSystemResource;
 import com.pockethub.file.service.FileService;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -31,11 +32,16 @@ public class FileController {
     ) {
         FileDownloadRes res = fileService.fileDownload(fileId, repoId);
 
+        // 로컬 디스크 파일은 그대로, Storage 에서 받은 임시 파일은 보낸 뒤 지운다
+        Resource body = res.isTemporary()
+                ? new TempFileSystemResource(res.getFile())
+                : new FileSystemResource(res.getFile());
+
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + res.getFileName() + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, res.contentDisposition())
 //                .header(HttpHeaders.CONTENT_TYPE, res.getMediaType())
 //                .header(HttpHeaders.CONTENT_LENGTH, res.getFileLength())
-                .body(new FileSystemResource(res.getFile()));
+                .body(body);
     }
 
     @GetMapping

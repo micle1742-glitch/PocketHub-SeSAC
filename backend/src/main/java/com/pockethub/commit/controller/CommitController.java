@@ -114,7 +114,7 @@ public class CommitController {
         FileDownloadRes res = commitService.downloadCommitFiles(commitId, repoId);
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + res.getFileName() + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, res.contentDisposition())
 //                .header(HttpHeaders.CONTENT_TYPE, res.getMediaType())
 //                .header(HttpHeaders.CONTENT_LENGTH, res.getFileLength())
                 .body(new TempFileSystemResource(res.getFile()));

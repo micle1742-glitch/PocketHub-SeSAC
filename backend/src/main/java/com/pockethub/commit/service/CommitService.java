@@ -46,10 +46,10 @@ public class CommitService {
                 .orElseThrow(() -> new NotFoundException("유저 정보가 존재하지 않습니다."));
         commitDTO.setUser(UserResponse.from(user));
 
-        try {
-            // 2. 파일 업로드
-            List<FileDTO> fileList = fileService.uploadFiles(repoId, commitId, files);
+        // 2. 파일 업로드 (중간에 실패하면 uploadFiles 가 이미 올린 파일을 정리한다)
+        List<FileDTO> fileList = fileService.uploadFiles(repoId, commitId, files);
 
+        try {
             // 3. DB 에 추가
             Commit commit = commitRepository.save(new Commit(commitId, repoId, user, commitMessage));
             for(FileDTO f : fileList) {
@@ -59,9 +59,9 @@ public class CommitService {
             }
 
             commitDTO.setFiles(fileList);
-        } catch(Exception e) {
-            fileService.cleanupSavedFiles(repoId, commitId, e);
-            System.out.println(e.getMessage());
+        } catch(RuntimeException e) {
+            // DB 저장 실패 시 저장소에 올린 파일을 지운다
+            fileService.cleanupSavedFiles(fileList, e);
             throw e;
         }
 

@@ -85,14 +85,17 @@ public class TeamService {
         Repo repo = findRepo(teamId);
         checkOwner(repo, loginUserId);
 
-        repoRepository.delete(repo);
-        repoRepository.flush();   // DB 삭제를 먼저 실행: 실패하면 아래 폴더 삭제까지 안 감
+        // 팀을 지우면 file 행도 CASCADE 로 지워지므로, 저장소에서 지울 파일 키를 먼저 읽어 둔다
+        List<String> storageKeys = fileService.findStorageKeys(teamId);
 
-        // 팀 삭제 성공 후 팀 파일 폴더 삭제
+        repoRepository.delete(repo);
+        repoRepository.flush();   // DB 삭제를 먼저 실행: 실패하면 아래 파일 삭제까지 안 감
+
+        // 팀 삭제 성공 후 팀 파일 삭제 (로컬: 팀 폴더, Supabase: 팀 파일 키들)
         try {
-            fileService.cleanupSavedFiles(teamId, null);
+            fileService.deleteTeamFiles(teamId, storageKeys);
         } catch (IOException | RuntimeException e) {
-            log.warn("팀 폴더 삭제 실패. teamId={}", teamId, e);
+            log.warn("팀 파일 삭제 실패. teamId={} ({})", teamId, e.getClass().getSimpleName());
         }
     }
 

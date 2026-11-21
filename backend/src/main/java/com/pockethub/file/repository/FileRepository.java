@@ -15,4 +15,8 @@ public interface FileRepository extends JpaRepository<File, Long> {
     @Query("SELECT f FROM File f WHERE f.repoId = :repoId AND f.isLatest = true AND f.state != 'DELETE'" +
             "ORDER BY f.fileId DESC")
     List<File> searchLatestFiles(@Param("repoId") long repoId);
+
+    // 팀 삭제 시 저장소에서 지울 파일 키 목록 (삭제 기록 행은 file_path 가 비어 있어 제외)
+    @Query("SELECT f.filePath FROM File f WHERE f.repoId = :repoId AND f.filePath <> ''")
+    List<String> findFilePathsByRepoId(@Param("repoId") long repoId);
 }
